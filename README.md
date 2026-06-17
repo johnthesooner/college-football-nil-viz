@@ -20,7 +20,8 @@ confidence at every level.**
 ## Demo
 
 ```bash
-git clone <repo-url> && cd nil-portal
+git clone https://github.com/johnthesooner/college-football-nil-viz.git
+cd college-football-nil-viz
 npm install
 npm run dev        # http://localhost:3000
 ```

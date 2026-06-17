@@ -1,8 +1,9 @@
 # Launch & Distribution Playbook
 
 Ready-to-post copy for sharing the app, ranked by fit (per
-[`MARKET_ANALYSIS.md`](MARKET_ANALYSIS.md)). Fill in `LIVE_URL` and `REPO_URL`
-once deployed.
+[`MARKET_ANALYSIS.md`](MARKET_ANALYSIS.md)). Repo:
+<https://github.com/johnthesooner/college-football-nil-viz> — replace `LIVE_URL`
+once the Vercel demo is deployed.
 
 > **Honesty guardrail — read first.** The app currently runs on **illustrative
 > sample data**. That's fine for engineering/design/portfolio channels (Show HN,
@@ -40,7 +41,7 @@ screenshot-friendly artifact. The timeline dual-axis chart is the #2 visual.
 > Football Data API (transfers, schools) + Opendorse's public NIL market-size
 > estimates. Every NIL dollar value carries a confidence badge
 > (confirmed/reported/estimated/unknown) because most NIL figures are estimates,
-> not confirmed earnings. Source + methodology: REPO_URL
+> not confirmed earnings. Source + methodology: https://github.com/johnthesooner/college-football-nil-viz
 
 **Notes:** OC = your own work on real/clearly-sourced data. Do **not** post the
 sample-data version here. Post mid-morning ET on a weekday; reply to early
@@ -55,7 +56,7 @@ comments fast.
 > Free and open, no paywall. The angle: every NIL dollar figure is labeled by
 > confidence (confirmed/reported/estimated/unknown) instead of being presented
 > as fact — because On3/247 valuations are *projections*, not confirmed deals.
-> Built on the College Football Data API. Live: LIVE_URL · Code: REPO_URL.
+> Built on the College Football Data API. Live: LIVE_URL · Code: https://github.com/johnthesooner/college-football-nil-viz.
 > What would make this more useful to you?
 
 **Notes:** r/CFB dislikes self-promo that isn't genuinely useful — lead with the
@@ -83,7 +84,7 @@ free tool and ask for feedback. Read the subreddit's self-promotion rules first.
 >
 > **It currently runs on illustrative sample data** (clearly labeled throughout);
 > the four JSON seed files swap for real data with no code changes — the data
-> sourcing/licensing writeup is in the repo. Live: LIVE_URL · Code: REPO_URL.
+> sourcing/licensing writeup is in the repo. Live: LIVE_URL · Code: https://github.com/johnthesooner/college-football-nil-viz.
 > Feedback on the confidence model especially welcome.
 
 **Notes:** HN rewards honesty about limitations — leading with "sample data" is a
@@ -107,7 +108,7 @@ feature here. Post Tue–Thu ~8–10am ET. Engage every comment.
 > earnings. [attach nil.png]
 
 > (4/4) Free, open, no paywall. Built with Next.js + d3-sankey on the College
-> Football Data API. Code + methodology: REPO_URL. Currently on labeled sample
+> Football Data API. Code + methodology: https://github.com/johnthesooner/college-football-nil-viz. Currently on labeled sample
 > data; real-data swap is one step. RTs appreciated 🙏
 
 **Notes:** Tag CFB-analytics accounts; the flow-map clip is the hook.
@@ -132,7 +133,7 @@ feature here. Post Tue–Thu ~8–10am ET. Engage every comment.
 > analysis (most NIL data is paywalled and can't be redistributed) and a
 > competitive/market analysis.
 >
-> Live demo: LIVE_URL · Code + case study: REPO_URL
+> Live demo: LIVE_URL · Code + case study: https://github.com/johnthesooner/college-football-nil-viz
 > #dataviz #datavisualization #react #typescript #sportsanalytics
 
 ---
@@ -153,7 +154,7 @@ the bipartite-Sankey trick → the AutoSizer fix → validating data honesty in 
 ## Pre-launch checklist
 
 - [ ] Live demo deployed and reachable (`LIVE_URL`).
-- [ ] Repo public with the case-study README + demo GIF (`REPO_URL`).
+- [ ] Repo public with the case-study README + demo GIF (`https://github.com/johnthesooner/college-football-nil-viz`).
 - [ ] (For r/dataisbeautiful & r/CFB) real CFBD data swapped in, or post clearly
       labeled as a concept/demo.
 - [ ] Sample-data disclaimer still visible in-app (it is — footer + NIL banner).
