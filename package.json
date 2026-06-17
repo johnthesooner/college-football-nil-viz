@@ -6,21 +6,38 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "validate": "tsx scripts/validate-seed.ts",
+    "generate:seed": "tsx scripts/generate-seed.ts",
+    "screenshots": "node scripts/capture-screenshots.mjs",
+    "demo:gif": "node scripts/capture-demo.mjs && ffmpeg -y -framerate 0.55 -i .demo-frames/%02d.png -vf \"scale=1000:-1:flags=lanczos,split[s0][s1];[s0]palettegen=stats_mode=full[p];[s1][p]paletteuse=dither=sierra2_4a\" -loop 0 docs/screenshots/demo.gif",
+    "check:data": "tsx scripts/check-sample-data.ts",
+    "ingest:cfbd": "tsx scripts/ingest-cfbd.ts",
+    "predev": "npm run validate",
+    "prebuild": "npm run validate",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
+    "d3-sankey": "^0.12.3",
+    "lucide-react": "^1.18.0",
     "next": "16.2.9",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "recharts": "^3.8.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/d3-sankey": "^0.12.5",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
+    "puppeteer-core": "^25.1.0",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "tsx": "^4.22.4",
+    "typescript": "^5",
+    "vitest": "^4.1.8"
   }
 }

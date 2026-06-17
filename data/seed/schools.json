@@ -1,0 +1,209 @@
+{
+  "_meta": {
+    "is_sample_data": true,
+    "last_updated": "2024-12-31",
+    "disclaimer": "This is illustrative sample data. Player-level NIL values are not confirmed. See /methodology for details."
+  },
+  "data": [
+    {
+      "school_id": "alabama",
+      "name": "Alabama",
+      "conference": "SEC",
+      "state": "AL",
+      "latitude": 33.2098,
+      "longitude": -87.5692
+    },
+    {
+      "school_id": "georgia",
+      "name": "Georgia",
+      "conference": "SEC",
+      "state": "GA",
+      "latitude": 33.948,
+      "longitude": -83.3773
+    },
+    {
+      "school_id": "lsu",
+      "name": "LSU",
+      "conference": "SEC",
+      "state": "LA",
+      "latitude": 30.4133,
+      "longitude": -91.18
+    },
+    {
+      "school_id": "florida",
+      "name": "Florida",
+      "conference": "SEC",
+      "state": "FL",
+      "latitude": 29.65,
+      "longitude": -82.349
+    },
+    {
+      "school_id": "tennessee",
+      "name": "Tennessee",
+      "conference": "SEC",
+      "state": "TN",
+      "latitude": 35.955,
+      "longitude": -83.9295
+    },
+    {
+      "school_id": "texas-am",
+      "name": "Texas A&M",
+      "conference": "SEC",
+      "state": "TX",
+      "latitude": 30.61,
+      "longitude": -96.34
+    },
+    {
+      "school_id": "auburn",
+      "name": "Auburn",
+      "conference": "SEC",
+      "state": "AL",
+      "latitude": 32.602,
+      "longitude": -85.49
+    },
+    {
+      "school_id": "ohio-state",
+      "name": "Ohio State",
+      "conference": "Big Ten",
+      "state": "OH",
+      "latitude": 40.0017,
+      "longitude": -83.0197
+    },
+    {
+      "school_id": "michigan",
+      "name": "Michigan",
+      "conference": "Big Ten",
+      "state": "MI",
+      "latitude": 42.2659,
+      "longitude": -83.7487
+    },
+    {
+      "school_id": "penn-state",
+      "name": "Penn State",
+      "conference": "Big Ten",
+      "state": "PA",
+      "latitude": 40.798,
+      "longitude": -77.86
+    },
+    {
+      "school_id": "wisconsin",
+      "name": "Wisconsin",
+      "conference": "Big Ten",
+      "state": "WI",
+      "latitude": 43.07,
+      "longitude": -89.412
+    },
+    {
+      "school_id": "nebraska",
+      "name": "Nebraska",
+      "conference": "Big Ten",
+      "state": "NE",
+      "latitude": 40.82,
+      "longitude": -96.7058
+    },
+    {
+      "school_id": "texas",
+      "name": "Texas",
+      "conference": "Big 12",
+      "state": "TX",
+      "latitude": 30.284,
+      "longitude": -97.732
+    },
+    {
+      "school_id": "oklahoma",
+      "name": "Oklahoma",
+      "conference": "Big 12",
+      "state": "OK",
+      "latitude": 35.2058,
+      "longitude": -97.4423
+    },
+    {
+      "school_id": "baylor",
+      "name": "Baylor",
+      "conference": "Big 12",
+      "state": "TX",
+      "latitude": 31.5489,
+      "longitude": -97.1131
+    },
+    {
+      "school_id": "kansas-state",
+      "name": "Kansas State",
+      "conference": "Big 12",
+      "state": "KS",
+      "latitude": 39.1974,
+      "longitude": -96.5847
+    },
+    {
+      "school_id": "clemson",
+      "name": "Clemson",
+      "conference": "ACC",
+      "state": "SC",
+      "latitude": 34.678,
+      "longitude": -82.837
+    },
+    {
+      "school_id": "florida-state",
+      "name": "Florida State",
+      "conference": "ACC",
+      "state": "FL",
+      "latitude": 30.4419,
+      "longitude": -84.2985
+    },
+    {
+      "school_id": "miami",
+      "name": "Miami",
+      "conference": "ACC",
+      "state": "FL",
+      "latitude": 25.7215,
+      "longitude": -80.279
+    },
+    {
+      "school_id": "north-carolina",
+      "name": "North Carolina",
+      "conference": "ACC",
+      "state": "NC",
+      "latitude": 35.9049,
+      "longitude": -79.0469
+    },
+    {
+      "school_id": "oregon",
+      "name": "Oregon",
+      "conference": "Pac-12",
+      "state": "OR",
+      "latitude": 44.058,
+      "longitude": -123.068
+    },
+    {
+      "school_id": "washington",
+      "name": "Washington",
+      "conference": "Pac-12",
+      "state": "WA",
+      "latitude": 47.65,
+      "longitude": -122.303
+    },
+    {
+      "school_id": "stanford",
+      "name": "Stanford",
+      "conference": "Pac-12",
+      "state": "CA",
+      "latitude": 37.434,
+      "longitude": -122.161
+    },
+    {
+      "school_id": "cincinnati",
+      "name": "Cincinnati",
+      "conference": "AAC",
+      "state": "OH",
+      "latitude": 39.131,
+      "longitude": -84.516
+    },
+    {
+      "school_id": "memphis",
+      "name": "Memphis",
+      "conference": "AAC",
+      "state": "TN",
+      "latitude": 35.119,
+      "longitude": -89.937
+    }
+  ]
+}

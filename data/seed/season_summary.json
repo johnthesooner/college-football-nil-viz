@@ -1,0 +1,189 @@
+{
+  "_meta": {
+    "is_sample_data": true,
+    "last_updated": "2024-12-31",
+    "disclaimer": "This is illustrative sample data. Player-level NIL values are not confirmed. See /methodology for details."
+  },
+  "data": [
+    {
+      "season": 2005,
+      "total_transfers": 520,
+      "total_reported_nil_value": null,
+      "estimated_nil_market_size": null,
+      "source_url": null,
+      "source_name": null,
+      "notes": "Illustrative sample transfer volume. NIL compensation was not permitted under NCAA rules before July 1, 2021, so NIL fields are null."
+    },
+    {
+      "season": 2006,
+      "total_transfers": 580,
+      "total_reported_nil_value": null,
+      "estimated_nil_market_size": null,
+      "source_url": null,
+      "source_name": null,
+      "notes": "Illustrative sample transfer volume. NIL compensation was not permitted under NCAA rules before July 1, 2021, so NIL fields are null."
+    },
+    {
+      "season": 2007,
+      "total_transfers": 640,
+      "total_reported_nil_value": null,
+      "estimated_nil_market_size": null,
+      "source_url": null,
+      "source_name": null,
+      "notes": "Illustrative sample transfer volume. NIL compensation was not permitted under NCAA rules before July 1, 2021, so NIL fields are null."
+    },
+    {
+      "season": 2008,
+      "total_transfers": 710,
+      "total_reported_nil_value": null,
+      "estimated_nil_market_size": null,
+      "source_url": null,
+      "source_name": null,
+      "notes": "Illustrative sample transfer volume. NIL compensation was not permitted under NCAA rules before July 1, 2021, so NIL fields are null."
+    },
+    {
+      "season": 2009,
+      "total_transfers": 780,
+      "total_reported_nil_value": null,
+      "estimated_nil_market_size": null,
+      "source_url": null,
+      "source_name": null,
+      "notes": "Illustrative sample transfer volume. NIL compensation was not permitted under NCAA rules before July 1, 2021, so NIL fields are null."
+    },
+    {
+      "season": 2010,
+      "total_transfers": 860,
+      "total_reported_nil_value": null,
+      "estimated_nil_market_size": null,
+      "source_url": null,
+      "source_name": null,
+      "notes": "Illustrative sample transfer volume. NIL compensation was not permitted under NCAA rules before July 1, 2021, so NIL fields are null."
+    },
+    {
+      "season": 2011,
+      "total_transfers": 950,
+      "total_reported_nil_value": null,
+      "estimated_nil_market_size": null,
+      "source_url": null,
+      "source_name": null,
+      "notes": "Illustrative sample transfer volume. NIL compensation was not permitted under NCAA rules before July 1, 2021, so NIL fields are null."
+    },
+    {
+      "season": 2012,
+      "total_transfers": 1050,
+      "total_reported_nil_value": null,
+      "estimated_nil_market_size": null,
+      "source_url": null,
+      "source_name": null,
+      "notes": "Illustrative sample transfer volume. NIL compensation was not permitted under NCAA rules before July 1, 2021, so NIL fields are null."
+    },
+    {
+      "season": 2013,
+      "total_transfers": 1150,
+      "total_reported_nil_value": null,
+      "estimated_nil_market_size": null,
+      "source_url": null,
+      "source_name": null,
+      "notes": "Illustrative sample transfer volume. NIL compensation was not permitted under NCAA rules before July 1, 2021, so NIL fields are null."
+    },
+    {
+      "season": 2014,
+      "total_transfers": 1250,
+      "total_reported_nil_value": null,
+      "estimated_nil_market_size": null,
+      "source_url": null,
+      "source_name": null,
+      "notes": "Illustrative sample transfer volume. NIL compensation was not permitted under NCAA rules before July 1, 2021, so NIL fields are null."
+    },
+    {
+      "season": 2015,
+      "total_transfers": 1350,
+      "total_reported_nil_value": null,
+      "estimated_nil_market_size": null,
+      "source_url": null,
+      "source_name": null,
+      "notes": "Illustrative sample transfer volume. NIL compensation was not permitted under NCAA rules before July 1, 2021, so NIL fields are null."
+    },
+    {
+      "season": 2016,
+      "total_transfers": 1450,
+      "total_reported_nil_value": null,
+      "estimated_nil_market_size": null,
+      "source_url": null,
+      "source_name": null,
+      "notes": "Illustrative sample transfer volume. NIL compensation was not permitted under NCAA rules before July 1, 2021, so NIL fields are null."
+    },
+    {
+      "season": 2017,
+      "total_transfers": 1500,
+      "total_reported_nil_value": null,
+      "estimated_nil_market_size": null,
+      "source_url": null,
+      "source_name": null,
+      "notes": "Illustrative sample transfer volume. NIL compensation was not permitted under NCAA rules before July 1, 2021, so NIL fields are null."
+    },
+    {
+      "season": 2018,
+      "total_transfers": 2000,
+      "total_reported_nil_value": null,
+      "estimated_nil_market_size": null,
+      "source_url": null,
+      "source_name": null,
+      "notes": "Illustrative sample transfer volume. NIL compensation was not permitted under NCAA rules before July 1, 2021, so NIL fields are null."
+    },
+    {
+      "season": 2019,
+      "total_transfers": 2600,
+      "total_reported_nil_value": null,
+      "estimated_nil_market_size": null,
+      "source_url": null,
+      "source_name": null,
+      "notes": "Illustrative sample transfer volume. NIL compensation was not permitted under NCAA rules before July 1, 2021, so NIL fields are null."
+    },
+    {
+      "season": 2020,
+      "total_transfers": 3400,
+      "total_reported_nil_value": null,
+      "estimated_nil_market_size": null,
+      "source_url": null,
+      "source_name": null,
+      "notes": "Illustrative sample transfer volume. NIL compensation was not permitted under NCAA rules before July 1, 2021, so NIL fields are null."
+    },
+    {
+      "season": 2021,
+      "total_transfers": 5000,
+      "total_reported_nil_value": 1410000,
+      "estimated_nil_market_size": 917000000,
+      "source_url": null,
+      "source_name": null,
+      "notes": "Transfer count is an illustrative sample shaped to public reporting on portal volume. NIL figures are estimated/illustrative, not sourced; always shown with an estimated badge."
+    },
+    {
+      "season": 2022,
+      "total_transfers": 8200,
+      "total_reported_nil_value": 695000,
+      "estimated_nil_market_size": 1170000000,
+      "source_url": null,
+      "source_name": null,
+      "notes": "Transfer count is an illustrative sample shaped to public reporting on portal volume. NIL figures are estimated/illustrative, not sourced; always shown with an estimated badge."
+    },
+    {
+      "season": 2023,
+      "total_transfers": 9800,
+      "total_reported_nil_value": 4785000,
+      "estimated_nil_market_size": 1280000000,
+      "source_url": null,
+      "source_name": null,
+      "notes": "Transfer count is an illustrative sample shaped to public reporting on portal volume. NIL figures are estimated/illustrative, not sourced; always shown with an estimated badge."
+    },
+    {
+      "season": 2024,
+      "total_transfers": 11000,
+      "total_reported_nil_value": 1320000,
+      "estimated_nil_market_size": 1500000000,
+      "source_url": null,
+      "source_name": null,
+      "notes": "Transfer count is an illustrative sample shaped to public reporting on portal volume. NIL figures are estimated/illustrative, not sourced; always shown with an estimated badge."
+    }
+  ]
+}
