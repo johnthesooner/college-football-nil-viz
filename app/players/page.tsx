@@ -140,7 +140,17 @@ export default function PlayersPage() {
                       <Fragment key={p.player_id}>
                         <tr
                           onClick={() => setExpandedId(expanded ? null : p.player_id)}
-                          className="cursor-pointer border-b border-border/60 transition-colors hover:bg-surface-2"
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              setExpandedId(expanded ? null : p.player_id);
+                            }
+                          }}
+                          tabIndex={0}
+                          role="button"
+                          aria-expanded={expanded}
+                          aria-label={`${p.player_name} — ${expanded ? "collapse" : "expand"} full transfer record`}
+                          className="cursor-pointer border-b border-border/60 transition-colors hover:bg-surface-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
                         >
                           <td className="py-2.5 pl-4 pr-3 text-muted">
                             <ChevronRight className={cn("h-4 w-4 transition-transform", expanded && "rotate-90")} aria-hidden />

@@ -13,6 +13,7 @@ import {
 import { StatCard } from "@/components/ui/StatCard";
 import { Card } from "@/components/ui/Card";
 import { ConfidenceBadge } from "@/components/ui/ConfidenceBadge";
+import { DataDisclaimer } from "@/components/ui/DataDisclaimer";
 import { ChartFrame } from "@/components/charts/ChartFrame";
 import { TransferLineChart } from "@/components/charts/LineChart";
 import {
@@ -71,15 +72,16 @@ export default function HomePage() {
       {/* Hero */}
       <section className="mb-12 max-w-3xl">
         <span className="inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent/10 px-3 py-1 text-xs font-medium text-accent">
-          20 years of college football player movement
+          Transfer volume since 2005 · NIL era 2021–{latestSeason}
         </span>
         <h1 className="mt-4 text-4xl font-bold tracking-tight text-text-primary sm:text-5xl">
           How NIL and the transfer portal rewired college football.
         </h1>
         <p className="mt-4 text-lg leading-relaxed text-text-secondary">
-          From a trickle of transfers to a high-mobility marketplace. Explore transfer volume, where
-          players moved, and reported NIL activity from 2005 to {latestSeason} — with honest labeling
-          of how confident we are in every number.
+          From a trickle of transfers to a high-mobility marketplace. Explore transfer volume since
+          2005, where players moved, and reported NIL activity for the 2021–{latestSeason} NIL era —
+          with honest labeling of how confident we are in every number. The point of the project is
+          the <em>method</em> for showing data confidence, not the numbers themselves.
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
@@ -96,6 +98,18 @@ export default function HomePage() {
           </Link>
         </div>
       </section>
+
+      {/* Sample-data disclaimer — visible on the first screen, not just the footer */}
+      <DataDisclaimer className="mb-10">
+        <span className="font-semibold text-warning">Illustrative sample data.</span> Player names are
+        fictional and every dollar figure is a placeholder — never a real reported amount. Headline
+        stats below (e.g. top destination conference) reflect the sample&apos;s built-in assumptions,
+        not a measured finding. See the{" "}
+        <Link href="/methodology" className="font-medium text-accent underline-offset-2 hover:underline">
+          Methodology
+        </Link>{" "}
+        page.
+      </DataDisclaimer>
 
       {/* Callout cards */}
       <section className="mb-14 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -116,13 +130,13 @@ export default function HomePage() {
           label="Top destination conference"
           value={topConference ?? "—"}
           icon={Trophy}
-          caption="Most inbound transfers across the sample dataset."
+          caption="Sample artifact — the data is shaped by a built-in conference-pull assumption, not a measured result."
         />
         <StatCard
           label="Most transferred position"
           value={topPosition ?? "—"}
           icon={Users}
-          caption="Highest transfer count across the sample dataset."
+          caption="Highest transfer count in the sample (position mix is a generation assumption)."
         />
       </section>
 

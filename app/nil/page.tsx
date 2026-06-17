@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Info } from "lucide-react";
 import type { ConfidenceLevel, NILAggregate } from "@/lib/types";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { Card } from "@/components/ui/Card";
@@ -6,6 +7,7 @@ import { DataDisclaimer } from "@/components/ui/DataDisclaimer";
 import { ConfidenceBadge } from "@/components/ui/ConfidenceBadge";
 import { Badge } from "@/components/ui/Badge";
 import { SourceLink } from "@/components/ui/SourceLink";
+import { Tooltip } from "@/components/ui/Tooltip";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { ChartFrame } from "@/components/charts/ChartFrame";
 import { NILBarChart, FlowBalanceChart } from "@/components/charts/BarChart";
@@ -21,11 +23,13 @@ import { formatNilAmount } from "@/lib/utils";
 // Least-certain confidence present in an aggregate set — shown as the
 // chart-level badge so a chart never reads as more confident than its data.
 const RANK: Record<ConfidenceLevel, number> = { confirmed: 3, reported: 2, estimated: 1, unknown: 0 };
-function worstConfidence(aggs: NILAggregate[]): ConfidenceLevel {
+function worstConfidence(levels: ConfidenceLevel[]): ConfidenceLevel {
+  if (levels.length === 0) return "unknown";
   let worst: ConfidenceLevel = "confirmed";
-  for (const a of aggs) if (RANK[a.confidence] < RANK[worst]) worst = a.confidence;
-  return aggs.length === 0 ? "unknown" : worst;
+  for (const l of levels) if (RANK[l] < RANK[worst]) worst = l;
+  return worst;
 }
+const confidencesOf = (aggs: NILAggregate[]): ConfidenceLevel[] => aggs.map((a) => a.confidence);
 
 export default function NILPage() {
   const topDeals = getTopDeals(10);
@@ -47,8 +51,8 @@ export default function NILPage() {
         {/* Top reported deals table */}
         <Card
           title="Top reported deals"
-          subtitle="Ranked by reported amount. Unknown-amount deals are excluded from this ranking."
-          action={<ConfidenceBadge level={worstConfidence(topDeals.map((d) => ({ key: "", total_reported: 0, deal_count: 0, confidence: d.confidence_level })))} />}
+          subtitle="Ranked by reported amount. Every figure here — including rows badged “confirmed” — is illustrative sample data; hover the ⓘ on any row for its specific caveat. Unknown-amount deals are excluded from this ranking."
+          action={<ConfidenceBadge level={worstConfidence(topDeals.map((d) => d.confidence_level))} />}
         >
           {topDeals.length === 0 ? (
             <EmptyState message="No reported deals available." />
@@ -83,7 +87,15 @@ export default function NILPage() {
                         {formatNilAmount(d.reported_amount)}
                       </td>
                       <td className="py-2.5 pr-3">
-                        <ConfidenceBadge level={d.confidence_level} />
+                        <span className="inline-flex items-center gap-1.5">
+                          <ConfidenceBadge level={d.confidence_level} />
+                          <Tooltip content={d.notes}>
+                            <Info
+                              className="h-3.5 w-3.5 text-muted"
+                              aria-label={`Why this figure is illustrative: ${d.notes}`}
+                            />
+                          </Tooltip>
+                        </span>
                       </td>
                       <td className="py-2.5">
                         <SourceLink url={d.source_url} name={d.source_name} />
@@ -101,7 +113,7 @@ export default function NILPage() {
           <Card
             title="Reported NIL by position"
             subtitle="Summed reported amounts (illustrative)."
-            action={<ConfidenceBadge level={worstConfidence(byPosition)} />}
+            action={<ConfidenceBadge level={worstConfidence(confidencesOf(byPosition))} />}
           >
             <ChartFrame label="NIL by position" height={320}>
               <NILBarChart data={byPosition} height={320} />
@@ -111,7 +123,7 @@ export default function NILPage() {
           <Card
             title="Reported NIL by school (top 10)"
             subtitle="Summed reported amounts (illustrative)."
-            action={<ConfidenceBadge level={worstConfidence(bySchool)} />}
+            action={<ConfidenceBadge level={worstConfidence(confidencesOf(bySchool))} />}
           >
             <ChartFrame label="NIL by school" height={320}>
               <NILBarChart data={bySchool} height={320} />
@@ -121,7 +133,7 @@ export default function NILPage() {
           <Card
             title="Reported NIL by conference"
             subtitle="Summed reported amounts (illustrative)."
-            action={<ConfidenceBadge level={worstConfidence(byConference)} />}
+            action={<ConfidenceBadge level={worstConfidence(confidencesOf(byConference))} />}
           >
             <ChartFrame label="NIL by conference" height={320}>
               <NILBarChart data={byConference} height={320} />
@@ -140,7 +152,11 @@ export default function NILPage() {
 
         <p className="text-xs leading-relaxed text-muted">
           Dollar totals sum only deals that disclose an amount; unknown amounts are never counted as
-          $0. Each chart&apos;s badge reflects the least-certain deal in that view. See the{" "}
+          $0. Each chart&apos;s badge reflects the least-certain deal in that view. Source links on
+          &ldquo;confirmed&rdquo; sample rows point to a real organization&apos;s home page to
+          demonstrate the sourced-tier UI — they do <strong>not</strong> document the specific
+          (illustrative) dollar figure, and the per-conference/school/position rankings reflect the
+          dataset&apos;s built-in sampling assumptions rather than a measured finding. See the{" "}
           <Link href="/methodology" className="text-accent underline-offset-2 hover:underline">
             Methodology
           </Link>{" "}

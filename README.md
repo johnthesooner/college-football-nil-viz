@@ -17,6 +17,27 @@ confidence at every level.**
 
 ---
 
+## What this project does — and doesn't — demonstrate
+
+**It demonstrates:** product thinking about *trust* (confidence-as-a-feature), a
+clean strict-TypeScript Next.js app, a pure and unit-tested data layer, a
+hand-built bipartite Sankey, real loading/empty/error states, and a validation
+suite wired into dev/build/CI.
+
+**It does not (yet) demonstrate analysis of *real* data.** The shipped dataset is
+synthetic and deterministic. Consequently, the app's apparent "findings" — e.g.
+the top destination conference, NIL-by-conference, the Sankey shape — are
+**downstream of a built-in `CONFERENCE_PULL` assumption in
+`scripts/generate-seed.ts`, not measured results.** They are labeled as such in
+the UI. Likewise, **seed validation guarantees the data is internally consistent
+and honestly labeled — it does not (and cannot) prove any figure is accurate.**
+The roadmap's first item (real CollegeFootballData ingest) is what would turn
+this from a visualization demo into a data project.
+
+A full self-critique lives in [`CRITICAL_REVIEW.md`](CRITICAL_REVIEW.md).
+
+---
+
 ## Demo
 
 ```bash

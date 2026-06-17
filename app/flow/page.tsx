@@ -101,7 +101,9 @@ export default function FlowPage() {
 
         <p className="text-xs leading-relaxed text-muted">
           Each conference/school appears on both sides (as an origin and a destination) so two-way
-          movement renders cleanly. Figures are illustrative sample data — see the{" "}
+          movement renders cleanly. Figures are illustrative sample data, and destination popularity
+          here is shaped by a built-in &ldquo;conference pull&rdquo; assumption (Power conferences
+          weighted to attract more inbound transfers) rather than measured league data — see the{" "}
           <Link href="/methodology" className="text-accent underline-offset-2 hover:underline">
             Methodology
           </Link>{" "}
