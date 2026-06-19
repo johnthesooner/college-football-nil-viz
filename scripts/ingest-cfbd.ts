@@ -1,197 +1,107 @@
 /**
- * Ingest real data from the College Football Data API (CFBD) into review-copy
- * seed files. SAFE BY DEFAULT: writes `*.cfbd.json` next to the seed files
- * (never overwrites your working data) so you can validate and diff before
- * promoting.
+ * TICKET-6 — Real CollegeFootballData (CFBD) ingestion (raw cache layer).
  *
- *   1. Get a free key (1k calls/mo, or 3k with an .edu email):
- *      https://collegefootballdata.com/key
- *   2. export CFBD_API_KEY=...   (or put it in .env.local)
- *   3. npm run ingest:cfbd -- --year-min 2021 --year-max 2024
- *   4. Review/validate, then promote:
- *      for f in schools players season_summary; do
- *        cp data/seed/$f.cfbd.json data/seed/$f.json    # (season_summary.cfbd.json)
- *      done
- *      npm run validate && npm run check:data
+ * Pulls real CFBD v2 data for a span of seasons and caches the RAW responses to
+ * data/raw/<endpoint>_<year>.json. This ticket is ingestion ONLY:
+ *   • it does NOT transform into the app's canonical model (that is TICKET-7), and
+ *   • it does NOT touch data/seed/ — so the app keeps building keyless off the
+ *     labeled sample data until the real marts land.
  *
- * WHAT CFBD CAN AND CANNOT FILL (verified — see DATA_SOURCES.md):
- *  - schools.json      ✅ name, conference, state, latitude, longitude (/teams/fbs)
- *  - players.json      ✅ name, position, season, from/to school+conference, date
- *                      ⚠️ class_year is NOT in the portal payload — defaulted
- *                         (see --default-class-year) and flagged; resolve via a
- *                         roster join or manual review before treating as real.
- *  - season_summary    ✅ total_transfers (counted); estimated_nil_market_size
- *                         from Opendorse's published estimates (attributed).
- *  - nil_deals.json    ❌ CFBD has no NIL dollar amounts. Curate manually from
- *                         official announcements (`confirmed`) / reporting
- *                         (`reported`); this script does not touch it.
+ *   1. Get a free key (1k calls/mo): https://collegefootballdata.com/key
+ *   2. Put it in .env (gitignored):  CFBD_API_KEY=...
+ *   3. npm run ingest:cfbd                  # cold run: fetch + cache 2018–2025
+ *      npm run ingest:cfbd                  # warm run: 0 API calls (uses cache)
+ *      npm run ingest:cfbd -- --refresh     # force re-fetch
+ *      npm run ingest:cfbd -- --years=2021-2024
+ *
+ * CFBD portal rows frequently have a null `destination` (a portal ENTRY without
+ * a landing school). We preserve those verbatim and never invent completed
+ * transfers — see the null-destination count in the summary.
  */
-import { writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { loadEnv } from "../lib/cfbd/loadEnv";
+import { createClient } from "../lib/cfbd/client";
+import { runIngest } from "../lib/cfbd/ingest";
+import type { IngestSummary } from "../lib/cfbd/types";
 
-const API = "https://api.collegefootballdata.com";
-const KEY = process.env.CFBD_API_KEY;
+loadEnv();
 
-type ClassYear = "FR" | "SO" | "JR" | "SR" | "GR";
+const FREE_TIER_BUDGET = 1000;
 
-function arg(name: string, fallback: string): string {
+function flagValue(name: string): string | undefined {
+  const eq = process.argv.find((a) => a.startsWith(`--${name}=`));
+  if (eq) return eq.slice(name.length + 3);
   const i = process.argv.indexOf(`--${name}`);
-  return i >= 0 && process.argv[i + 1] ? process.argv[i + 1] : fallback;
+  const next = process.argv[i + 1];
+  if (i >= 0 && next && !next.startsWith("--")) return next;
+  return undefined;
 }
 
-const YEAR_MIN = Number(arg("year-min", "2021"));
-const YEAR_MAX = Number(arg("year-max", "2024"));
-const OUT_DIR = join(process.cwd(), arg("out-dir", "data/seed"));
-const SUFFIX = arg("suffix", ".cfbd");
-const DEFAULT_CLASS_YEAR = arg("default-class-year", "JR") as ClassYear;
-const TODAY = new Date().toISOString().slice(0, 10);
+function hasFlag(name: string): boolean {
+  return process.argv.includes(`--${name}`);
+}
 
-// Opendorse "NIL at 3/4" published market-size estimates (USD). Attributed,
-// always rendered with an "estimated" badge. Update from the latest report.
-const NIL_MARKET: Record<number, number> = {
-  2021: 917_000_000,
-  2022: 1_170_000_000,
-  2023: 1_280_000_000,
-  2024: 1_670_000_000,
-};
-
-async function cfbd<T>(path: string): Promise<T> {
-  const res = await fetch(`${API}${path}`, {
-    headers: { Authorization: `Bearer ${KEY}`, Accept: "application/json" },
-  });
-  if (!res.ok) {
-    throw new Error(`CFBD ${path} → ${res.status} ${res.statusText} (${await res.text()})`);
+function resolveYears(): number[] {
+  let min = Number(flagValue("year-min") ?? 2018);
+  let max = Number(flagValue("year-max") ?? 2025);
+  const range = flagValue("years");
+  if (range && /^\d{4}-\d{4}$/.test(range)) {
+    const [a, b] = range.split("-").map(Number);
+    min = a;
+    max = b;
   }
-  return (await res.json()) as T;
+  const years: number[] = [];
+  for (let y = min; y <= max; y++) years.push(y);
+  return years;
 }
 
-function meta(disclaimer: string) {
-  return { is_sample_data: false, last_updated: TODAY, disclaimer };
+function printSummary(s: IngestSummary, force: boolean): void {
+  const first = s.years[0];
+  const last = s.years[s.years.length - 1];
+  console.log("\n────────── CFBD ingest summary ──────────");
+  console.log(`seasons       : ${first}–${last} (${s.years.length})`);
+  console.log(`endpoints     : ${s.endpoints.length} (${s.endpoints.join(", ")})`);
+  console.log(`API calls     : ${s.totals.apiCalls}${force ? "  [--refresh]" : ""}`);
+  console.log(`cache         : ${s.totals.cacheHits} hits, ${s.totals.cacheMisses} misses, ${s.totals.filesWritten} files written`);
+  console.log(`records (rows): ${s.totals.rowsTotal}`);
+  console.log(
+    `portal        : ${s.portal.total} entries — ${s.portal.nullDestination} null destination (entries w/o a landing), ` +
+      `${s.portal.nullOrigin} null origin  [PRESERVED, not dropped]`,
+  );
+  console.log("per endpoint  :");
+  for (const e of s.perEndpoint) {
+    console.log(`   ${e.name.padEnd(20)} rows=${String(e.rows).padStart(7)}  calls=${e.apiCalls}  cacheHits=${e.cacheHits}`);
+  }
+  for (const sk of s.skipped) console.log(`skipped       : ${sk}`);
+  console.log(`budget        : ${s.totals.apiCalls}/${FREE_TIER_BUDGET} free-tier calls used this run`);
+  console.log("─────────────────────────────────────────\n");
 }
 
-function write(name: string, payload: unknown) {
-  const path = join(OUT_DIR, `${name}${SUFFIX}.json`);
-  writeFileSync(path, JSON.stringify(payload, null, 2) + "\n");
-  console.log(`  wrote ${path}`);
-}
-
-interface CfbdTeam {
-  school: string;
-  conference: string | null;
-  classification: string | null;
-  location?: { city?: string; state?: string; latitude?: number; longitude?: number };
-}
-interface CfbdTransfer {
-  season: number;
-  firstName: string;
-  lastName: string;
-  position: string | null;
-  origin: string | null;
-  destination: string | null;
-  transferDate: string | null;
-}
-
-async function main() {
-  if (!KEY) {
+async function main(): Promise<void> {
+  const key = process.env.CFBD_API_KEY;
+  if (!key) {
     console.error(
-      "✖ CFBD_API_KEY is not set. Get a free key at https://collegefootballdata.com/key\n" +
-        "  then: export CFBD_API_KEY=...  (or add it to .env.local)",
+      "✖ CFBD_API_KEY is not set.\n" +
+        "  Get a free key at https://collegefootballdata.com/key, then add it to .env (gitignored):\n" +
+        "    CFBD_API_KEY=your_key_here",
     );
     process.exit(1);
   }
 
-  console.log(`Ingesting CFBD data for ${YEAR_MIN}–${YEAR_MAX} → ${OUT_DIR} (suffix ${SUFFIX})\n`);
+  const years = resolveYears();
+  const force = hasFlag("refresh");
+  const cacheDir = join(process.cwd(), flagValue("out-dir") ?? "data/raw");
 
-  // --- schools (FBS) ------------------------------------------------------
-  const teams = await cfbd<CfbdTeam[]>("/teams/fbs");
-  const fbs = teams.filter((t) => t.school && t.conference);
-  const confBySchool = new Map(fbs.map((t) => [t.school, t.conference as string]));
-  const schools = fbs.map((t) => ({
-    school_id: t.school.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""),
-    name: t.school,
-    conference: t.conference as string,
-    state: t.location?.state ?? "",
-    latitude: t.location?.latitude ?? 0,
-    longitude: t.location?.longitude ?? 0,
-  }));
-  write("schools", {
-    _meta: meta("School metadata from the College Football Data API (/teams/fbs)."),
-    data: schools,
-  });
-  console.log(`  schools: ${schools.length} FBS teams\n`);
-
-  // --- players (transfers) + season volume --------------------------------
-  const players: unknown[] = [];
-  const seasonVolume = new Map<number, number>();
-  let seq = 0;
-  let missingClassYear = 0;
-
-  for (let year = YEAR_MIN; year <= YEAR_MAX; year++) {
-    const transfers = await cfbd<CfbdTransfer[]>(`/player/portal?year=${year}`);
-    seasonVolume.set(year, transfers.length); // league-wide volume = all portal entries
-
-    for (const t of transfers) {
-      // Keep only FBS↔FBS moves so conferences resolve and validation passes.
-      if (!t.origin || !t.destination) continue;
-      if (!confBySchool.has(t.origin) || !confBySchool.has(t.destination)) continue;
-      if (t.origin === t.destination) continue;
-      seq += 1;
-      missingClassYear += 1; // class_year is not in the portal payload
-      players.push({
-        player_id: `p${String(seq).padStart(5, "0")}`,
-        player_name: `${t.firstName} ${t.lastName}`.trim(),
-        position: t.position ?? "ATH",
-        class_year: DEFAULT_CLASS_YEAR, // ⚠️ placeholder — not from CFBD
-        season: t.season,
-        from_school: t.origin,
-        to_school: t.destination,
-        from_conference: confBySchool.get(t.origin),
-        to_conference: confBySchool.get(t.destination),
-        transfer_date: t.transferDate ? t.transferDate.slice(0, 10) : null,
-        source_url: "https://collegefootballdata.com/",
-        source_name: "College Football Data",
-      });
-    }
-  }
-  write("players", {
-    _meta: meta(
-      "Transfers from the College Football Data API (/player/portal), FBS↔FBS only. " +
-        "class_year is a placeholder — not available from the portal endpoint.",
-    ),
-    data: players,
-  });
   console.log(
-    `  players: ${players.length} FBS↔FBS transfers ` +
-      `(⚠️ ${missingClassYear} rows have a placeholder class_year — resolve before treating as real)\n`,
+    `CFBD ingest → ${cacheDir}  seasons ${years[0]}–${years[years.length - 1]}${force ? "  [--refresh]" : ""}`,
   );
 
-  // --- season summary -----------------------------------------------------
-  const seasons = [];
-  for (let year = YEAR_MIN; year <= YEAR_MAX; year++) {
-    seasons.push({
-      season: year,
-      total_transfers: seasonVolume.get(year) ?? 0,
-      total_reported_nil_value: null, // CFBD has no NIL $; fill from curated nil_deals
-      estimated_nil_market_size: NIL_MARKET[year] ?? null,
-      source_url: "https://collegefootballdata.com/",
-      source_name: "College Football Data (transfers); Opendorse NIL at 3/4 (market size)",
-      notes:
-        "Transfer volume from CFBD portal entries. NIL market size is Opendorse's published estimate — attributed, illustrative, never audited.",
-    });
-  }
-  write("season_summary", {
-    _meta: meta("Season transfer volume from CFBD; NIL market size from Opendorse estimates."),
-    data: seasons,
-  });
-  console.log(`  season_summary: ${seasons.length} seasons\n`);
-
-  console.log("Done. Review the *.cfbd.json files, then:");
-  console.log("  • resolve class_year (roster join or manual) before promoting players");
-  console.log("  • curate nil_deals.json manually from official announcements / reporting");
-  console.log("  • cp the reviewed files over data/seed/*.json, then `npm run validate`");
+  const client = createClient({ apiKey: key });
+  const summary = await runIngest({ years, cacheDir, client, force, log: (m) => console.log(m) });
+  printSummary(summary, force);
 }
 
-main().catch((err) => {
-  console.error(err);
+main().catch((err: unknown) => {
+  console.error(err instanceof Error ? err.message : err);
   process.exit(1);
 });
