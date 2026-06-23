@@ -98,7 +98,7 @@ than `$0`, and the rules are enforced in code — not just promised in a footnot
 | Styling | Tailwind CSS **v4** — tokens via `@theme` in `globals.css` (no config file) |
 | Charts | Recharts **3** (line/bar) + `d3-sankey` **0.12** for Sankey *layout math only* |
 | Icons | lucide-react |
-| Testing | Vitest (55 unit tests) |
+| Testing | Vitest (58 unit tests) |
 | Data | local JSON seed files (no database) |
 
 Requires **Node ≥ 20**, **npm ≥ 10** (built and verified on Node 26 / npm 11).
@@ -210,7 +210,7 @@ npm run dev          # dev server (validates seed first)
 npm run build        # production build (validates seed first)
 npm run start        # serve the production build
 npm run validate     # seed-data integrity check
-npm run test         # Vitest unit suite (55 tests)
+npm run test         # Vitest unit suite (58 tests)
 npm run lint         # ESLint (zero warnings)
 npm run generate:seed   # regenerate the deterministic sample data
 npm run check:data      # report SAMPLE vs REAL data status (add -- --require-real to gate)
