@@ -137,9 +137,11 @@ export default function TimelinePage() {
         </Card>
 
         <p className="text-xs leading-relaxed text-muted">
-          The league-wide line is illustrative sample data shaped to public reporting on transfer
-          volume; per-conference and per-position breakdowns are not available at the league level, so
-          filters drive the sample series only. See the{" "}
+          The <span className="font-medium text-text-secondary">dashed pre-2018 segment</span> is
+          illustrative and low-confidence — there is no reliable league-wide transfer count before the
+          portal launched, so that stretch should not be read as measured. The solid 2018+ segment is
+          where real ingested data lands. Per-conference and per-position breakdowns are not available
+          at the league level, so filters drive the sample series only. See the{" "}
           <Link href="/methodology" className="text-accent underline-offset-2 hover:underline">
             Methodology
           </Link>{" "}

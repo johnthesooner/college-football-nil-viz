@@ -15,6 +15,22 @@ import { formatNumber } from "@/lib/utils";
 import { CHART } from "@/components/charts/palette";
 import { AutoSizer } from "@/components/charts/AutoSizer";
 
+/**
+ * Seasons before the transfer portal (2018) have no reliable league-wide count,
+ * so that segment of the volume line is rendered dashed/muted as low-confidence.
+ */
+const PORTAL_SEASON = 2018;
+
+/** Split a volume series at the portal boundary so it can render in two styles.
+ *  The boundary year is included in BOTH segments so the line stays connected. */
+function splitAtPortal<T extends { season: number; total_transfers: number }>(data: T[]) {
+  return data.map((d) => ({
+    ...d,
+    volumePre: d.season <= PORTAL_SEASON ? d.total_transfers : null,
+    volumePost: d.season >= PORTAL_SEASON ? d.total_transfers : null,
+  }));
+}
+
 /** One year on the filterable timeline: league-wide volume + filtered sample. */
 export interface TimelinePoint {
   season: number;
@@ -63,11 +79,12 @@ export function TransferLineChart({
   showEvents = !compact,
 }: TransferLineChartProps) {
   const events = showEvents ? data.filter((d) => d.event) : [];
+  const chartData = splitAtPortal(data);
 
   return (
     <AutoSizer height={height}>
       {({ width, height: h }) => (
-        <ReLineChart width={width} height={h} data={data} margin={{ top: 12, right: 16, bottom: 4, left: compact ? -16 : 4 }}>
+        <ReLineChart width={width} height={h} data={chartData} margin={{ top: 12, right: 16, bottom: 4, left: compact ? -16 : 4 }}>
           <CartesianGrid stroke={CHART.grid} strokeDasharray="3 3" vertical={false} />
           <XAxis
             dataKey="season"
@@ -101,13 +118,26 @@ export function TransferLineChart({
               }}
             />
           ))}
+          {/* pre-2018: no reliable league count — dashed/muted (low confidence) */}
           <Line
             type="monotone"
-            dataKey="total_transfers"
+            dataKey="volumePre"
+            stroke={CHART.muted}
+            strokeWidth={compact ? 2 : 2.5}
+            strokeDasharray="5 4"
+            dot={false}
+            activeDot={false}
+            connectNulls={false}
+          />
+          {/* 2018+: portal-era volume — solid */}
+          <Line
+            type="monotone"
+            dataKey="volumePost"
             stroke={CHART.accent}
             strokeWidth={compact ? 2 : 2.5}
             dot={compact ? false : { r: 2.5, fill: CHART.accent, strokeWidth: 0 }}
             activeDot={{ r: 5, fill: CHART.accent, stroke: CHART.surface, strokeWidth: 2 }}
+            connectNulls={false}
           />
         </ReLineChart>
       )}
@@ -151,10 +181,11 @@ export function FilterableTimelineChart({
   height?: number;
 }) {
   const events = data.filter((d) => d.event);
+  const chartData = splitAtPortal(data);
   return (
     <AutoSizer height={height}>
       {({ width, height: h }) => (
-        <ReLineChart width={width} height={h} data={data} margin={{ top: 16, right: 8, bottom: 4, left: 4 }}>
+        <ReLineChart width={width} height={h} data={chartData} margin={{ top: 16, right: 8, bottom: 4, left: 4 }}>
           <CartesianGrid stroke={CHART.grid} strokeDasharray="3 3" vertical={false} />
           <XAxis
             dataKey="season"
@@ -188,7 +219,11 @@ export function FilterableTimelineChart({
             wrapperStyle={{ fontSize: 12, color: CHART.textSecondary }}
             formatter={(value) => (
               <span className="text-text-secondary">
-                {value === "total_transfers" ? "Total transfers (league-wide)" : "Matching sample"}
+                {value === "volumePost"
+                  ? "Transfers, 2018+ (league-wide)"
+                  : value === "volumePre"
+                    ? "Transfers, pre-2018 (illustrative, low confidence)"
+                    : "Matching sample"}
               </span>
             )}
           />
@@ -207,14 +242,28 @@ export function FilterableTimelineChart({
               }}
             />
           ))}
+          {/* pre-2018: no reliable league count — dashed/muted (low confidence) */}
           <Line
             yAxisId="total"
             type="monotone"
-            dataKey="total_transfers"
+            dataKey="volumePre"
+            stroke={CHART.muted}
+            strokeWidth={2.5}
+            strokeDasharray="5 4"
+            dot={false}
+            activeDot={false}
+            connectNulls={false}
+          />
+          {/* 2018+: portal-era volume — solid */}
+          <Line
+            yAxisId="total"
+            type="monotone"
+            dataKey="volumePost"
             stroke={CHART.accent}
             strokeWidth={2.5}
             dot={{ r: 2.5, fill: CHART.accent, strokeWidth: 0 }}
             activeDot={{ r: 5, fill: CHART.accent, stroke: CHART.surface, strokeWidth: 2 }}
+            connectNulls={false}
           />
           <Line
             yAxisId="sample"

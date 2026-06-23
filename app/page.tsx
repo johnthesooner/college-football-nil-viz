@@ -164,7 +164,7 @@ export default function HomePage() {
       <section className="mb-14">
         <Card
           title="Transfers by year, 2005–2024"
-          subtitle="A teaser — open the Timeline page to filter by conference, school, position, and class."
+          subtitle="A teaser — open the Timeline page to filter by conference, school, position, and class. The dashed pre-2018 segment is illustrative (no reliable league count before the portal)."
           action={
             <Link
               href="/timeline"
